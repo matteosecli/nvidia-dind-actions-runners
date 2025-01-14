@@ -8,6 +8,7 @@ env:
   REGISTRY: isnob/nvidia-actions-runner
   IMAGE_NAME: nvidia-actions-runner
   USERNAME: isnob46
+  RUNNER_VERSION: 2.321.0
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,5 +41,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           file: Dockerfile.nvidia-actions-runner
+          build-args: |
+            RUNNER_VERSION=${{ env.RUNNER_VERSION }}
           push: true
-          tags: isnob46/nvidia-actions-runner:latest,isnob46/nvidia-actions-runner:cuda12-2.319
+          tags: isnob46/nvidia-actions-runner:latest,isnob46/nvidia-actions-runner:cuda12-${{ env.RUNNER_VERSION }}
