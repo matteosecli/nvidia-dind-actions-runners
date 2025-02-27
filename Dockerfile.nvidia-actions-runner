@@ -71,7 +71,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update && \
     apt-get install -y --no-install-recommends nvidia-docker2 ca-certificates curl
 
-# Docker Compose Plugin
+# Docker Compose Plugin and cudnn9
 RUN install -m 0755 -d /etc/apt/keyrings \
     && curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc \
     && chmod a+r /etc/apt/keyrings/docker.asc
@@ -79,7 +79,7 @@ RUN echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
     tee /etc/apt/sources.list.d/docker.list > /dev/null
-RUN apt-get update && apt-get install -y --no-install-recommends docker-compose-plugin && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends docker-compose-plugin make build-essential cmake cudnn9-cuda-12 ffmpeg libsm6 libmagic1 libxext6 && rm -rf /var/lib/apt/lists/*
 
 RUN install -o root -g root -m 755 docker/* /usr/bin/ && rm -rf docker
 
