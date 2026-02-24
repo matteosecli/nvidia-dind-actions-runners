@@ -1,9 +1,6 @@
 # Nvidia-Actions-Runner (and Dind) for ARC controller on Kubernetes
 
-**if you want to run a self-hosted github runners with GPU support on kubernetes, these images may help you.**
-
-
-CUDA 12 and Ubuntu 22.04 based Actions Runner image and Nvidia-DinD (Docker in Docker) image, optimized for use with https://github.com/actions/actions-runner-controller
+CUDA 12 and Ubuntu 24.04 based Actions Runner image and Nvidia-DinD (Docker in Docker) image, optimized for use with https://github.com/actions/actions-runner-controller
 
 ## Usage With helm
 
@@ -16,8 +13,6 @@ helm upgrade -i "${RELEASE_NAME}" -f template.yaml \
     oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
 ```
 
-
-
 ### Nvidia Actions Runner Template
 ```yaml
 template:
@@ -28,7 +23,7 @@ template:
         effect: "NoSchedule"
     containers:
       - name: runner
-        image: isnob46/nvidia-actions-runner:cuda12-2.319
+        image: matteosecli/nvidia-actions-runner:latest
         command:
           - /home/runner/run.sh
 ```
@@ -44,7 +39,7 @@ spec:
         effect: "NoSchedule"
     initContainers:
     - name: init-dind-externals
-        image: isnob46/nvidia-actions-runner:cuda12-2.319
+        image: matteosecli/nvidia-actions-runner:latest
         command:
         ["cp", "-r", "-v", "/home/runner/externals/.", "/home/runner/tmpDir/"]
         volumeMounts:
@@ -52,22 +47,22 @@ spec:
             mountPath: /home/runner/tmpDir
     containers:
     - name: runner
-        image: isnob46/nvidia-actions-runner:cuda12-2.319
+        image: matteosecli/nvidia-actions-runner:latest
         command: ["/home/runner/run.sh"]
         env:
         - name: DOCKER_HOST
-            value: unix:///run/docker/docker.sock
+            value: unix:///var/run/docker.sock
         volumeMounts:
         - name: work
             mountPath: /home/runner/_work
         - name: dind-sock
-            mountPath: /run/docker
+            mountPath: /var/run
             readOnly: true
     - name: dind
-        image: isnob46/nvidia-dind:cuda12
+        image: matteosecli/nvidia-dind:latest
         args:
         - dockerd
-        - --host=unix:///run/docker/docker.sock
+        - --host=unix:///var/run/docker.sock
         - --group=$(DOCKER_GROUP_GID)
         env:
         - name: DOCKER_GROUP_GID
@@ -78,7 +73,7 @@ spec:
         - name: work
             mountPath: /home/runner/_work
         - name: dind-sock
-            mountPath: /run/docker
+            mountPath: /var/run
         - name: dind-externals
             mountPath: /home/runner/externals
     volumes:
@@ -90,8 +85,7 @@ spec:
         emptyDir: {}
 ```
 
-
-# Acknowledgement
+## Acknowledgements
 
 - https://github.com/Extrality/nvidia-dind
 - https://github.com/actions/runner
