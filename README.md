@@ -23,7 +23,7 @@ template:
         effect: "NoSchedule"
     containers:
       - name: runner
-        image: matteosecli/nvidia-actions-runner:latest
+        image: ltpn/nvidia-actions-runner:latest
         command:
           - /home/runner/run.sh
 ```
@@ -39,7 +39,7 @@ spec:
         effect: "NoSchedule"
     initContainers:
     - name: init-dind-externals
-        image: matteosecli/nvidia-actions-runner:latest
+        image: ltpn/nvidia-actions-runner:latest
         command:
         ["cp", "-r", "-v", "/home/runner/externals/.", "/home/runner/tmpDir/"]
         volumeMounts:
@@ -47,7 +47,7 @@ spec:
             mountPath: /home/runner/tmpDir
     containers:
     - name: runner
-        image: matteosecli/nvidia-actions-runner:latest
+        image: ltpn/nvidia-actions-runner:latest
         command: ["/home/runner/run.sh"]
         env:
         - name: DOCKER_HOST
@@ -59,7 +59,7 @@ spec:
             mountPath: /var/run
             readOnly: true
     - name: dind
-        image: matteosecli/nvidia-dind:latest
+        image: ltpn/nvidia-dind:latest
         args:
         - dockerd
         - --host=unix:///var/run/docker.sock
@@ -91,3 +91,4 @@ spec:
 - https://github.com/actions/runner
 - https://github.com/actions/actions-runner-controller
 - https://github.com/actions/actions-runner-controller/discussions/3409
+- https://github.com/CuriousDolphin/nvidia-dind-actions-runners
