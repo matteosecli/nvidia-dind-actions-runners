@@ -36,6 +36,8 @@ jobs:
           file: Dockerfile.nvidia-dind
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/nvidia-dind:latest,${{ env.REGISTRY }}/${{ env.OWNER }}/nvidia-dind:cuda12
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push Nvidia-Actions-Runner Image
         id: build-and-push-runner
@@ -46,3 +48,5 @@ jobs:
             RUNNER_VERSION=${{ env.RUNNER_VERSION }}
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/nvidia-actions-runner:latest,${{ env.REGISTRY }}/${{ env.OWNER }}/nvidia-actions-runner:cuda12-${{ env.RUNNER_VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
